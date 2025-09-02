@@ -1,7 +1,15 @@
+COMPOSE = docker compose -f srcs/docker-compose.yml
+ 
 all:
-	docker-compose -f srcs/docker-compose.yml up --build -docker
+	${COMPOSE} up -d --build
 
 down:
-	docker-compose -f srcs/docker-compose.yml down
+	${COMPOSE} down
+
+logs:
+	${COMPOSE} logs -f
 
 re: down all
+
+ps:
+	docker ps -a

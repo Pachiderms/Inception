@@ -1,12 +1,14 @@
-FROM alpine:latest
+FROM alpine:3.19
 
-RUN apk update && apk add nginx openssl
+RUN apk add --no-cache nginx openssl bash
 
-WORKDIR /var/www/html
+RUN mkdir -p /var/ww/html /etc/nginx/ssl
 
-COPY tools /tools
+
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+COPY tools/setup.sh /tools/setup.sh
 RUN chmod +x /tools/setup.sh
 
 EXPOSE 443
-
-CMD["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/tools/setup.sh"]
