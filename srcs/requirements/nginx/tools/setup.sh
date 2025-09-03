@@ -15,8 +15,10 @@ if [ ! -f /etc/nginx/ssl/nginx.crt ] || [ ! -f /etc/nginx/ssl/nginx.key ]; then
 fi
 
 # Injecter la valeur du domaine dans la config nginx
-sed -i "s/__DOMAIN__/${DOMAIN_NAME}/g" /etc/nginx/nginx.conf
+if grep -q "__DOMAIN__" /etc/nginx/nginx.conf; then
+  sed -i "s/__DOMAIN__/${DOMAIN_NAME}/g" /etc/nginx/nginx.conf
 echo "==> nginx.conf mis à jour avec server_name ${DOMAIN_NAME}"
+fi
 
 echo "==> Démarrage de Nginx avec TLS activé"
 exec nginx -g "daemon off;"

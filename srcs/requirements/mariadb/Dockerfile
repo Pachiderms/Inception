@@ -1,10 +1,13 @@
-FROM debian:bullseye
+FROM alpine:3.19
 
-RUN apt-get update && apt-get install -y mariadb-server
+RUN apk add --no-cache mariadb mariadb-client bash
 
-COPY tools /tools
-RUN chmod +x /tools/init.sh
+# Dossier data (monté par volume) + conf
+RUN mkdir -p /var/lib/mysql /run/mysqld && chown -R mysql:mysql /var/lib/mysql /run/mysqld
+
+COPY tools/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 3306
-
-CMD["mysqld_safe"]
+USER mysql
+ENTRYPOINT ["/entrypoint.sh"]

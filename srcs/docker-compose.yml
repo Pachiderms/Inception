@@ -12,8 +12,43 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ${WP_DATA_HOST}:/var/www/html:ro
+    depends_on:
+      - wordpress
     networks:
       - inception
+    
+  wordpress:
+    build: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=mariadb:3306
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+    depends_on:
+      - mariadb
+    volumes:
+      - ${WP_DATA_HOST}:/var/www/html
+    networks:
+      - inception
+
+  mariadb:
+    build: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DB_DATA_HOST}:/var/lib/mysql
+    networks:
+      - inception    
 
 volumes:
   wordpress_files:
