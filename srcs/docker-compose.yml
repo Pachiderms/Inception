@@ -11,7 +11,7 @@ services:
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
-      - ${WP_DATA_HOST}:/var/www/html:ro
+      - wordpress_data:/var/www/html:ro
     depends_on:
       - wordpress
     networks:
@@ -31,7 +31,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - ${WP_DATA_HOST}:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - inception
 
@@ -46,14 +46,13 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
-      - ${DB_DATA_HOST}:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception    
 
 volumes:
-  wordpress_files:
-    driver: local
+  wordpress_data:
+  mariadb_data:
 
 networks:
   inception:
-    driver: bridge
