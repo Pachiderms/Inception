@@ -1,18 +1,24 @@
-FROM alpine:3.19
+FROM debian:13.0
 
-# PHP-FPM + extensions nécessaires WordPress
-RUN apk add --no-cache php82 php82-fpm php82-mysqli php82-json php82-opcache php82-curl \
-    php82-dom php82-exif php82-fileinfo php82-mbstring php82-openssl php82-pecl-redis \
-    php82-session php82-zip curl bash openssl
+RUN apt update
+RUN apt upgrade -y
+RUN apt-get -y install wget \
+    php7.3 \
+    php.fpm \
+    php-client \
+    mariadb-client
 
-# Préparer php-fpm en mode "foreground"
-RUN sed -i 's|^;*daemonize = yes|daemonize = no|' /etc/php82/php-fpm.conf \
- && sed -i 's|^;*listen = 127.0.0.1:9000|listen = 0.0.0.0:9000|' /etc/php82/php-fpm.d/www.conf
+RUN wget https://fr.wordpress.org/wordpress-6.7-fr_FR.tar.gz -P /var/www
+RUN cd /var/www && tar -xzf wordpress-6.7-fr_FR.tar.gz && rm wordpress-6.7-fr_FR.tar.gz
+RUN chown -R root:root /var/www/wordpress
 
-# Installer WordPress au démarrage si absent
-COPY tools/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+
+COPY ./tools/wp_conf.sh /wp_conf.sh
+RUN chmod +x /wp_conf.sh
+ENTRYPOINT [ "/wp_conf.sh" ]
 
 WORKDIR /var/www/html
+
 EXPOSE 9000
-ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/sbin/php-fpm7.3",  "-F"]

@@ -8,10 +8,10 @@ services:
     restart: always
     ports:
       - "443:443"
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
+    env_file:
+      - .env
     volumes:
-      - wordpress_data:/var/www/html:ro
+      - wordpress_data:/var/www/html
     depends_on:
       - wordpress
     networks:
@@ -22,12 +22,8 @@ services:
     image: wordpress
     container_name: wordpress
     restart: always
-    environment:
-      - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_USER=${MYSQL_USER}
-      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+    env_file:
+      - .env
     depends_on:
       - mariadb
     volumes:
@@ -40,19 +36,29 @@ services:
     image: mariadb
     container_name: mariadb
     restart: always
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception    
 
+#Ou seront stockes les volumes
 volumes:
   wordpress_data:
+    driver: local
+    driver_opts:
+    type: none
+    o: bind
+    device: /home/tzizi/data/wordpress
   mariadb_data:
+    driver: local
+    driver_opts:
+    type: none
+    o: bind
+    device: /home/tzizi/data/mariadb
 
+#communication entre les containers en bridge
 networks:
   inception:
+    driver: bridge

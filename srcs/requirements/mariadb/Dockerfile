@@ -1,13 +1,13 @@
-FROM alpine:3.19
+FROM debian:13.0
 
-RUN apk add --no-cache mariadb mariadb-client bash
+RUN apt update
+RUN apt-get install mariadb-server -y
 
-# Dossier data (monté par volume) + conf
-RUN mkdir -p /var/lib/mysql /run/mysqld && chown -R mysql:mysql /var/lib/mysql /run/mysqld
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY tools/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY ./tools/maria_conf.sh /maria_conf.sh
+RUN chmod +x /maria_conf.sh
 
 EXPOSE 3306
-USER mysql
-ENTRYPOINT ["/entrypoint.sh"]
+
+ENTRYPOINT ["/maria_conf.sh"]

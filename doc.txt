@@ -5,3 +5,5 @@ docker run -dp 127.0.0.1:3000:3000 DOCKER_NAME
 docker ps -> list containers running
 docker stop DOCKER_ID -> kill running container rm to remove or rm -f to force remove
 docker system prune -af --volumes -> clean les images/conatainers/volumes
+
+docker volume rm $(docker volume ls -q | grep mariadb_data)
