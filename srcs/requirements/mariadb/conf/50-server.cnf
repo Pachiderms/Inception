@@ -1,5 +1,5 @@
 [myslqd]
-datadir = /var/lib/myslqd
+datadir = /var/lib/myslq
 socket = /run/mysqld/myslqd.sock
 bind_adress=*
 port = 3306
