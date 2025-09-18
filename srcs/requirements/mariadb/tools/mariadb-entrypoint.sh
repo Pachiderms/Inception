@@ -1,4 +1,17 @@
-service mysql start;
+#!/bin/sh
+
+MYSQL_DATABASE=wordpress
+MYSQL_USER=tzizi
+MYSQL_PASSWORD=pass_42
+MYSQL_ROOT_PASSWORD=root_pass_42
+
+mariadbd-safe --datadir=/var/lib/mysql &
+
+# Attendre que MariaDB démarre
+until mysqladmin ping >/dev/null 2>&1; do
+    echo "En attente de MariaDB..."
+    sleep 2
+done
 
 mysql -e "CREATE DATABASE IF NOT EXISTS \ '${MYSQL_DATABASE}\';"
 mysql -e "CREATE USER IF NOT EXISTS \'${MYSQL_USER}\'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"

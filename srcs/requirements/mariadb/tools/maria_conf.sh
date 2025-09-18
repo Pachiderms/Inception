@@ -1,44 +1,29 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-mysql_install_db
+MYSQL_DATABASE=wordpress
+MYSQL_USER=tzizi
+MYSQL_PASSWORD=pass_42
+MYSQL_ROOT_PASSWORD=root_pass_42
 
-/etc/init.d/mysql start
+# Lancer mysqld_safe en arrière-plan
+mariadbd-safe --datadir=/var/lib/mysql &
 
-#Check if the database exists
+# Attendre que MariaDB démarre
+until mysqladmin ping >/dev/null 2>&1; do
+    echo "En attente de MariaDB..."
+    sleep 2
+done
 
-if [ -d "/var/lib/mysql/$MYSQL_DATABASE" ]
-then 
+# Créer la base et l’utilisateur
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+mysql -u root -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -u root -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
+mysql -u root -e "ALTER USER 'root'@'' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+mysql -u root -e "FLUSH PRIVILEGES;"
 
-	echo "Database already exists"
-else
+# Arrêter le mysqld de fond proprement
+mysqladmin -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
 
-# Set root option so that connexion without root password is not possible
-
-mysql_secure_installation << _EOF_
-
-Y
-root4life
-root4life
-Y
-n
-Y
-Y
-_EOF_
-
-#Add a root user on 127.0.0.1 to allow remote connexion 
-#Flush privileges allow to your sql tables to be updated automatically when you modify it
-#mysql -uroot launch mysql command line client
-echo "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot
-
-#Create database and user in the database for wordpress
-
-echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -u root
-
-#Import database in the mysql command line
-mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /usr/local/bin/wordpress.sql
-
-fi
-
-/etc/init.d/mysql stop
-
-exec "$@"
+# Redémarrer en mode foreground (processus principal du conteneur)
+exec mariadbd-safe --datadir=/var/lib/mysql

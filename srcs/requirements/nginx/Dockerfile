@@ -2,7 +2,9 @@ FROM debian:13.0
 
 RUN apt update
 RUN apt-get install -y nginx \
-            openssl
+        vim \
+        curl \
+        openssl
 
 RUN mkdir -p /etc/nginx/ssl
 

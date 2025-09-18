@@ -28,11 +28,8 @@ COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
 #RUN mkdir /var/run/php
 
 COPY ./tools/wp-entrypoint.sh /var/www/
-#RUN chmod +x /var/www/wp-entrypoint.sh
-RUN ln -s var/html/wp-entrypoint.sh /
-ENTRYPOINT [ "wp-entrypoint.sh" ]
-#ENTRYPOINT [ "/var/www/wp-entrypoint.sh" ]
+RUN chmod +x /var/www/wp-entrypoint.sh
+ENTRYPOINT [ "/var/www/wp-entrypoint.sh" ]
 
 EXPOSE 9000
-
 CMD ["/usr/sbin/php-fpm7.3",  "-F"]
