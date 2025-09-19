@@ -1,6 +1,6 @@
 FROM debian:13.0
 
-RUN apt update
+RUN apt-get update
 RUN apt-get install -y nginx \
         vim \
         curl \

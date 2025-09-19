@@ -2,6 +2,6 @@
 user = tzizi
 datadir = /var/lib/myslq
 socket = /var/run/mysqld/myslqd.sock
-bind_adress=*
+bind_adress=0.0.0.0
 port = 3306
 skip-networking = false

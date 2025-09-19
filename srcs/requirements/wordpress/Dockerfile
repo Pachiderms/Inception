@@ -1,7 +1,7 @@
 FROM debian:13.0
 
-RUN apt update
-RUN apt upgrade -y
+RUN apt-get update
+RUN apt-get upgrade -y
 RUN apt-get -y install wget \
     php7.3 \
     php-fpm \
