@@ -10,4 +10,10 @@ https://hub.docker.com/r/mariadb/server/dockerfile
 https://docs.docker.com/reference/dockerfile/
 https://tuto.grademe.fr/inception/
 
+#delete all volumes and linked containers
+docker rm -vf $(docker ps -aq)
+
+#delete un volume
 docker volume rm $(docker volume ls -q | grep mariadb_data)
+#delete all images
+docker rmi -f $(docker images -aq)

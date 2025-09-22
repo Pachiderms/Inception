@@ -9,11 +9,11 @@ RUN rm -rf /var/lib/mysql \
     && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
     && chmod 777 /var/run/mysqld
 
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY ./tools/mariadb-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/mariadb-entrypoint.sh
 
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/mariadb-entrypoint.sh"]
 
-CMD ["mysqld", "--bind-adress=0.0.0.0"]
+CMD ["mysqld", "--bind-adress=127.0.0.1"]
