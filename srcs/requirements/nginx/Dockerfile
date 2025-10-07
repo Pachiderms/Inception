@@ -1,20 +1,18 @@
 FROM debian:13.0
 
-RUN apt-get update
-RUN apt-get install -y nginx \
-        vim \
-        curl \
+RUN apt update -y && apt upgrade -y
+RUN apt install -y nginx \
         openssl
 
 RUN mkdir -p /etc/nginx/ssl
 
 #generation du certificat ssl et de sa clé
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=${DOMAIN_NAME}/UID=${LOGIN}"
+RUN openssl req -x509 -newkey rsa:2048 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=PachiCorp/OU=Pachiderms/CN=${DOMAIN_NAME}/UID=${LOGIN}"
 
-RUN mkdir -p /var/run/nginx
+# RUN mkdir -p /var/run/nginx
 
 #copy de notre conf dans nginx
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/nginx.conf /etc/nginx/sites-available/default
 
 RUN chmod +x /var/www/html
 RUN chown -R www-data:www-data /var/www/html

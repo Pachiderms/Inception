@@ -8,10 +8,7 @@ down:
 
 stop: ${COMPOSE} stop
 
-logs:
-	${COMPOSE} logs -f
-
-ps:
-	docker ps -a
-
 re: down all
+
+
+.PHONY: all down stop re
