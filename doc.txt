@@ -9,11 +9,7 @@ docker system prune -af --volumes -> clean les images/conatainers/volumes
 
 https://hub.docker.com/r/mariadb/server/dockerfile
 https://docs.docker.com/reference/dockerfile/
-guide 1
 https://tuto.grademe.fr/inception/
-guide 2
-https://github.com/Forstman1/inception-42
-
 
 #delete all volumes and linked containers
 docker rm -vf $(docker ps -aq)

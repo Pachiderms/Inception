@@ -1,12 +1,8 @@
 #!/bin/bash
 
-service start mysqld
-
-ls /var/run/
-
 mysqld_safe --datadir=/var/lib/mysql &
 
-sleep 2
+sleep 5
 
 echo "CREATE DATABASE IF NOT EXISTS $db_name ;" > db1.sql
 echo "CREATE USER IF NOT EXISTS '$db_user'@'%' IDENTIFIED BY '$db_pwd' ;" >> db1.sql
