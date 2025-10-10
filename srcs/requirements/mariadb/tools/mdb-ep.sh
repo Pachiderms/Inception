@@ -1,12 +1,20 @@
 #!/bin/bash
 
-service start mysqld
+db_name=wordpress
+db_user=mysql
+db_pwd=pass_42
 
-ls /var/run/
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
 
 mysqld_safe --datadir=/var/lib/mysql &
 
-sleep 2
+until mysqladmin ping -h localhost --silent; do
+    echo "Waiting for Mariadb to start..."
+    sleep 2
+done
+
+echo "MARIDB STARTED !"
 
 echo "CREATE DATABASE IF NOT EXISTS $db_name ;" > db1.sql
 echo "CREATE USER IF NOT EXISTS '$db_user'@'%' IDENTIFIED BY '$db_pwd' ;" >> db1.sql
