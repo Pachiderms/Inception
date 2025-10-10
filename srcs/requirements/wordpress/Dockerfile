@@ -7,4 +7,4 @@ RUN apt -y install php-fpm \
 
 COPY ./tools/wp-ep.sh /
 RUN chmod +x /wp-ep.sh
-ENTRYPOINT [ "/wp-ep.sh" ]
+CMD [ "/wp-ep.sh" ]
