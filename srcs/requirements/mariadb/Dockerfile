@@ -8,4 +8,4 @@ COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 COPY ./tools/mdb-ep.sh /
 RUN chmod +x /mdb-ep.sh
 
-ENTRYPOINT ["/mdb-ep.sh"]
+CMD ["/mdb-ep.sh"]
