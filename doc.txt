@@ -18,3 +18,5 @@ docker rm -vf $(docker ps -aq)
 docker volume rm $(docker volume ls -q | grep mariadb_data)
 #delete all images
 docker rmi -f $(docker images -aq)
+docker build -t mariadb srcs/requirements/mariadb/ 
+docker run -it {container_name}

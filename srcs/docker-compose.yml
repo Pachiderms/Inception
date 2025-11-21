@@ -61,4 +61,5 @@ volumes:
 #communication entre les containers en bridge
 networks:
   inception:
+    driver: bridge
     name: inception

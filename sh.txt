@@ -1,2 +1,0 @@
-docker build -t mariadb srcs/requirements/mariadb/ 
-docker run -it mariadb
