@@ -1,65 +1,70 @@
 version: "3.9"
 
 services:
+
+  mariadb:
+    build: requirements/mariadb
+    container_name: mariadb
+    restart: always
+    env_file: .env
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - inception
+
+  wordpress:
+    build: requirements/wordpress
+    container_name: wordpress
+    restart: always
+    env_file: .env
+    secrets:
+      - db_password
+      - credentials
+    volumes:
+      - wp_data:/var/www/wordpress
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+
   nginx:
-    build: ./requirements/nginx/.
-    # image: nginx
+    build: requirements/nginx
     container_name: nginx
     restart: always
+    env_file: .env
     ports:
-      - "8443:443"
-    # env_file:
-    #   - .env
+      - "443:443"
     volumes:
-      - wordpress_data:/var/www/html
+      - wp_data:/var/www/wordpress:ro
     depends_on:
       - wordpress
     networks:
       - inception
-    
-  wordpress:
-    build: ./requirements/wordpress/.
-    # image: wordpress
-    container_name: wordpress
-    restart: always
-    env_file:
-      - .env
-    depends_on:
-      - mariadb
-    volumes:
-      - wordpress_data:/var/www/html
-    networks:
-      - inception
 
-  mariadb:
-    build: ./requirements/mariadb/.
-    image: mariadb
-    container_name: mariadb
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - inception    
 
-#Ou seront stockes les volumes
-volumes:
-  wordpress_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/tzizi/data/wordpress
-  mariadb_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/tzizi/data/mariadb
-
-#communication entre les containers en bridge
 networks:
   inception:
     driver: bridge
-    name: inception
+
+volumes:
+  db_data:
+    driver_opts:
+      type: none
+      device: /home/tzizi/data/db
+      o: bind
+  wp_data:
+    driver_opts:
+      type: none
+      device: /home/tzizi/data/wp
+      o: bind
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
