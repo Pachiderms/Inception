@@ -20,3 +20,10 @@ docker volume rm $(docker volume ls -q | grep mariadb_data)
 docker rmi -f $(docker images -aq)
 docker build -t mariadb srcs/requirements/mariadb/ 
 docker run -it {container_name}
+
+check que la config wp est prete
+docker exec -it mariadb sh -c 'env | grep MYSQL'
+
+check les creations mariadb
+docker exec -it mariadb mysql -u root -p
+SELECT User, Host FROM mysql.user;
