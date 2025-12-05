@@ -1,21 +1,25 @@
 #!/bin/sh
+set -e
 
-sleep 10
+echo "Waiting for MariaDB..."
+until nc -z mariadb 3306; do
+    sleep 1
+done
+echo "MariaDB is up!"
 
 cd /var/www/wordpress
 
-# Download WordPress if not present
 if [ ! -f wp-config.php ]; then
     echo "Downloading WordPress..."
     wp core download --allow-root --path=/var/www/wordpress
 
     echo "Creating wp-config.php..."
-    mv wp-config-sample.php wp-config.php
-
-    sed -i "s/database_name_here/$MYSQL_DATABASE/" wp-config.php
-    sed -i "s/username_here/$MYSQL_USER/" wp-config.php
-    sed -i "s/password_here/$(cat $MYSQL_PASSWORD_FILE)/" wp-config.php
-    sed -i "s/localhost/mariadb/" wp-config.php
+    wp config create \
+        --allow-root \
+        --dbname="$MYSQL_DATABASE" \
+        --dbuser="$MYSQL_USER" \
+        --dbpass="$(cat $MYSQL_PASSWORD_FILE)" \
+        --dbhost="mariadb"
 
     echo "Installing WordPress..."
     wp core install \
@@ -26,8 +30,10 @@ if [ ! -f wp-config.php ]; then
         --admin_email="$WP_ADMIN_EMAIL" \
         --allow-root
 
-    wp user create $WP_USER $WP_EMAIL --role=author --user_pass=$WP_PWD --alow-root
+    wp user create $WP_USER $WP_EMAIL \
+        --role=author \
+        --user_pass=$WP_PWD \
+        --allow-root
 fi
 
 exec php-fpm8.2 -F
-

@@ -4,7 +4,7 @@ set -e
 if [ ! -d /var/lib/mysql/mysql ]; then
     mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 
-    mysqld --user=mysql --skip-networking &
+    mariadbd --user=mysql --skip-networking &
     pid=$!
 
     until mysqladmin ping --silent; do
@@ -15,6 +15,8 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
 CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$(cat $MYSQL_PASSWORD_FILE)';
 GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
+CREATE USER 'root'@'%' IDENTIFIED BY '$(cat $MYSQL_ROOT_PASSWORD_FILE)';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$(cat $MYSQL_ROOT_PASSWORD_FILE)';
 FLUSH PRIVILEGES;
 EOF
@@ -22,4 +24,4 @@ EOF
     kill $pid
 fi
 
-exec mysqld --user=mysql
+exec mariadbd --user=mysql
