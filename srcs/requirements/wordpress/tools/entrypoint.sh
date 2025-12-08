@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-
+sleep 10
 echo "Waiting for MariaDB..."
 until nc -z mariadb 3306; do
     sleep 1
@@ -16,16 +16,15 @@ if [ ! -f wp-config.php ]; then
     rm latest.tar.gz
     cp wp-config-sample.php wp-config.php
 
-    echo "Creating wp-config.php..."
-    sed -i "s/database_name_here/$MYSQL_DATABASE/" wp-config.php
-    sed -i "s/username_here/$MYSQL_USER/" wp-config.php
-    sed -i "s/password_here/$(cat $MYSQL_PASSWORD_FILE)/" wp-config.php
-    sed -i "s/localhost/mariadb/" wp-config.php
+    wp config set --allow-root DB_NAME $MYSQL_DATABASE
+    wp config set --allow-root DB_USER $MYSQL_USER
+    wp config set --allow-root DB_PASSWORD $(cat $MYSQL_PASSWORD_FILE)
+    wp config set --allow-root DB_HOST $MYSQL_HOST
+    
 
+    wp core install --allow-root --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user="$WP_ADMIN" --admin_password="$(cat $WP_ADMIN_PASSWORD_FILE)" --admin_email="$WP_ADMIN_EMAIL"
 
-    wp core install --allow-root --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user=$$WP_ADMIN --admin_password=$(cat $WP_ADMIN_PASSWORD_FILE) --admin_email=$WP_ADMIN_EMAIL
-
-    wp user create --allow-root "$WP_USER" "${WP_EMAIL}" --user_pass=$cat $WP_PASS --role=author
+    wp user create --allow-root "$WP_USER" "$WP_EMAIL" --user_pass=$WP_PASS --role=author
 
     mkdir -p /run/php
     
