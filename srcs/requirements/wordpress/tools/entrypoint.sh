@@ -11,29 +11,24 @@ cd /var/www/wordpress
 
 if [ ! -f wp-config.php ]; then
     echo "Downloading WordPress..."
-    wp core download --allow-root --path=/var/www/wordpress
+    curl -O https://wordpress.org/latest.tar.gz
+    tar -xzf latest.tar.gz --strip-components=1
+    rm latest.tar.gz
+    cp wp-config-sample.php wp-config.php
 
     echo "Creating wp-config.php..."
-    wp config create \
-        --allow-root \
-        --dbname="$MYSQL_DATABASE" \
-        --dbuser="$MYSQL_USER" \
-        --dbpass="$(cat $MYSQL_PASSWORD_FILE)" \
-        --dbhost="mariadb"
+    sed -i "s/database_name_here/$MYSQL_DATABASE/" wp-config.php
+    sed -i "s/username_here/$MYSQL_USER/" wp-config.php
+    sed -i "s/password_here/$(cat $MYSQL_PASSWORD_FILE)/" wp-config.php
+    sed -i "s/localhost/mariadb/" wp-config.php
 
-    echo "Installing WordPress..."
-    wp core install \
-        --url="$DOMAIN_NAME" \
-        --title="$WP_TITLE" \
-        --admin_user="$WP_ADMIN" \
-        --admin_password="$(cat $WP_ADMIN_PASSWORD_FILE)" \
-        --admin_email="$WP_ADMIN_EMAIL" \
-        --allow-root
 
-    wp user create $WP_USER $WP_EMAIL \
-        --role=author \
-        --user_pass=$WP_PWD \
-        --allow-root
+    wp core install --allow-root --url="$DOMAIN_NAME" --title="$WP_TITLE" --admin_user=$$WP_ADMIN --admin_password=$(cat $WP_ADMIN_PASSWORD_FILE) --admin_email=$WP_ADMIN_EMAIL
+
+    wp user create --allow-root "$WP_USER" "${WP_EMAIL}" --user_pass=$cat $WP_PASS --role=author
+
+    mkdir -p /run/php
+    
 fi
 
 exec php-fpm8.2 -F
