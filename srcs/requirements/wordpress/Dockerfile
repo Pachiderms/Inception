@@ -1,21 +1,32 @@
-FROM debian:12-slim
+FROM debian:bookworm
 
-RUN apt-get update && apt-get install -y \
-    php-fpm php-mysql php-json php-curl php-dom php-mbstring \
-    mariadb-client curl tar wget netcat-openbsd \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt update -y && apt upgrade -y
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp
+RUN apt install wget php8.2 mariadb-client php8.2-fpm php8.2-mysql curl tar netcat-openbsd -y
+
+WORKDIR /var/www
+
+RUN	wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz
+
+RUN	tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
+
+RUN	chown -R root:root /var/www/wordpress
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
-COPY tools/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+RUN chmod +x wp-cli.phar
+
+RUN mv wp-cli.phar /usr/local/bin/wp
 
 WORKDIR /var/www/wordpress
 
+RUN mv wp-config-sample.php wp-config.php
+
+COPY tools/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 9000
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD [ "/bin/bash", "/entrypoint.sh" ]

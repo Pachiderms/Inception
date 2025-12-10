@@ -21,6 +21,10 @@ docker rmi -f $(docker images -aq)
 docker build -t mariadb srcs/requirements/mariadb/ 
 docker run -it {container_name}
 
+make down && sudo rm -rf /home/tzizi/data/wp/* && sudo rm -rf /home/tzizi/data/db/*
+docker compose -f srcs/docker-compose.yml down -v
+
+
 check que la config wp est prete
 docker exec -it mariadb sh -c 'env | grep MYSQL'
 

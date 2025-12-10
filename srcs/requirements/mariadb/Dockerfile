@@ -1,15 +1,13 @@
-FROM debian:12-slim
+FROM debian:bookworm
 
-RUN apt update && apt install -y mariadb-server mariadb-client && apt clean
+RUN apt update -y
+RUN apt upgrade -y
+RUN apt install mariadb-server tree -y
 
-RUN mkdir -p /run/mysqld && \
-    chown -R mysql:mysql /run/mysqld
-
-COPY conf/my.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY tools/init-db.sh /init-db.sh
-
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/init-db.sh /
 RUN chmod +x /init-db.sh
-
+  
 EXPOSE 3306
 
-ENTRYPOINT ["/init-db.sh"]
+CMD [ "/init-db.sh" ]
