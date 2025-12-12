@@ -1,34 +1,9 @@
-version: '3'
-
-networks:
-  Inception:
-    name: Inception
-    driver: bridge
-
-volumes:
-  wordpress:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/tzizi/data/wp
-  database:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/tzizi/data/db
-
 services:
   mariadb:
-    image: inception-mariadb
     container_name: mariadb
     build: ./requirements/mariadb
     env_file:
       - .env
-    secrets:
-      - db_password
-      - db_root_password
     volumes:
       - database:/var/lib/mysql
     networks:
@@ -36,14 +11,10 @@ services:
     restart: on-failure
 
   wordpress:
-    image: inception-wordpress
     container_name: wordpress
     build: ./requirements/wordpress
     env_file:
       - .env
-    secrets:
-      - db_password
-      - credentials
     depends_on:
       - mariadb
     volumes:
@@ -53,7 +24,6 @@ services:
     restart: on-failure
 
   nginx:
-    image: inception-nginx
     container_name: nginx
     build: ./requirements/nginx
     ports:
@@ -66,10 +36,21 @@ services:
       - Inception
     restart: on-failure
 
-secrets:
-  db_password:
-    file: ../secrets/db_password.txt
-  db_root_password:
-    file: ../secrets/db_root_password.txt
-  credentials:
-    file: ../secrets/credentials.txt
+networks:
+  Inception:
+    name: Inception
+    driver: bridge
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/tzizi/data/wordpress
+  database:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/tzizi/data/mariadb

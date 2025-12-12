@@ -1,6 +1,4 @@
 [mysqld]
-
-socket = /run/mysqld/mysqld.sock
 bind-address = 0.0.0.0
-skip-networking = false
 port = 3306
+innodb_use_native_aio = 0

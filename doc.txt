@@ -21,7 +21,7 @@ docker rmi -f $(docker images -aq)
 docker build -t mariadb srcs/requirements/mariadb/ 
 docker run -it {container_name}
 
-make down && sudo rm -rf /home/tzizi/data/wp/* && sudo rm -rf /home/tzizi/data/db/*
+make down && sudo rm -rf /home/tzizi/data/wordpres/* && sudo rm -rf /home/tzizi/data/mariadb/*
 docker compose -f srcs/docker-compose.yml down -v
 
 

@@ -10,7 +10,7 @@ RUN	wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz
 
 RUN	tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
 
-RUN	chown -R root:root /var/www/wordpress
+#RUN	chown -R root:root /var/www/wordpress
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
@@ -24,9 +24,9 @@ WORKDIR /var/www/wordpress
 
 RUN mv wp-config-sample.php wp-config.php
 
-COPY tools/entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+COPY tools/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-EXPOSE 9000
+RUN ln -sf /bin/true /usr/sbin/sendmail
 
-CMD [ "/bin/bash", "/entrypoint.sh" ]
+CMD [ "/usr/local/bin/entrypoint.sh" ]

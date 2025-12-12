@@ -1,27 +1,28 @@
 #!/bin/sh
 set -e
 
-# Dossier de la base MariaDB
 DB_DIR="/var/lib/mysql"
 
-# Si le dossier est vide → initialisation
-if [ ! -d "$DB_DIR/mysql" ]; then
-    echo "Initialisation de MariaDB..."
-    mysql_install_db --user=mysql --basedir=/usr --datadir=$DB_DIR
+mkdir -p /run/mysqld "$DB_DIR"
+chown -R mysql:mysql /run/mysqld "$DB_DIR"
 
-    # Démarrage temporaire pour créer la base et l'utilisateur
-    mysqld --user=mysql --bootstrap << EOF
-FLUSH PRIVILEGES;
-CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
-CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$(cat $MYSQL_PASSWORD_FILE)';
-GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$(cat $MYSQL_ROOT_PASSWORD_FILE)';
+mysqld_safe --user=mysql --datadir="$DB_DIR" &
+
+sleep 5
+
+ps aux | grep mysqld 
+netstat -lnp | grep mysqld
+
+mysql -uroot << EOF
+CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
 FLUSH PRIVILEGES;
 EOF
-    echo "MariaDB initialisée."
-else
-    echo "Base déjà existante, skip initialisation."
-fi
 
-echo "Lancement de MariaDB..."
-exec mysqld --user=mysql
+mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
+
+echo "MariaDB CONFIG DONE."
+
+exec mysqld_safe --user=mysql --datadir="$DB_DIR"
