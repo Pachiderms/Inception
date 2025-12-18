@@ -7,10 +7,8 @@ RUN apt install wget php8.2 mariadb-client php8.2-fpm php8.2-mysql curl tar netc
 WORKDIR /var/www
 
 RUN	wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz
-
 RUN	tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
 
-#RUN	chown -R root:root /var/www/wordpress
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
@@ -29,4 +27,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN ln -sf /bin/true /usr/sbin/sendmail
 
-CMD [ "/usr/local/bin/entrypoint.sh" ]
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
