@@ -2,6 +2,8 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
+    ports:
+      - "3306:3306"
     env_file:
       - .env
     volumes:
@@ -13,6 +15,8 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
+    ports:
+      - "9000:9000"
     env_file:
       - .env
     depends_on:
@@ -35,6 +39,62 @@ services:
     networks:
       - Inception
     restart: on-failure
+
+#Bonus Part
+
+  # redis:
+  #   container_name: redis
+  #   build: ./requirements/bonus/redis
+  #   ports:
+  #    - '6379:6379'
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - wordpress
+  #   volumes:
+  #     - wordpress:/var/www/wordpress
+  #   networks:
+  #     - Inception
+  #   restart: on-failure
+  
+  # ftp-server:
+  #   build: requirements/bonus/ftp_server
+  #   container_name: ftp-server
+  #   ports:
+  #     - "21:21"
+  #     - "21100-21110:21100-21110"
+  #   volumes:
+  #     - "wordpress:/var/www/wordpress"
+  #   networks:
+  #     - Inception
+  #   restart: always
+  #   environment:
+  #     FTP_USR: ${FTP_USR}
+  #     FTP_PWD: ${FTP_PWD}
+
+  # adminer:
+  #   build: ./requirements/bonus/adminer
+  #   restart: always
+  #   depends_on:
+  #     - mariadb
+  #   expose:
+  #    - "9000"
+  #   networks:
+  #     - Inception
+  
+  # hugo:
+  #   container_name: hugo
+  #   build: ./requirements/bonus/hugo
+  #   restart: always
+  #   networks:
+  #     - Inception
+
+  # static_page:
+  #   container_name: static_page
+  #   build: ./requirements/bonus/static_page
+  #   restart: always
+  #   networks:
+  #     - Inception
 
 networks:
   Inception:
