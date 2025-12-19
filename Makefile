@@ -31,7 +31,7 @@ stop: ${COMPOSE} stop
 delimages:
 	docker rmi -f $$(docker images -aq)
 
-re: down all
+re: down clean all
 
 
 .PHONY: all datadir localhost unhost clean fclean down stop delimages re

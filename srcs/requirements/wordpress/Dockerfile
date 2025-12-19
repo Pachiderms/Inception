@@ -2,7 +2,9 @@ FROM debian:bookworm
 
 RUN apt update -y && apt upgrade -y
 
-RUN apt install wget php8.2 mariadb-client php8.2-fpm php8.2-mysql curl tar netcat-openbsd -y
+RUN apt install -y wget php mariadb-client \
+    php-fpm php-mysql php-redis \
+    curl tar netcat-openbsd sendmail
 
 WORKDIR /var/www
 
@@ -26,5 +28,7 @@ COPY tools/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN ln -sf /bin/true /usr/sbin/sendmail
+
+EXPOSE 3309
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
