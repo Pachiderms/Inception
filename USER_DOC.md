@@ -17,3 +17,20 @@ Acess the website: https://login.42.fr
 Acess Admin panel: https://login.42.fr/wp-admin
 
 Check running services: docker ps
+
+.env example:
+
+# DOMAIN
+DOMAIN_NAME=tzizi.42.fr
+
+# MARIADB
+MYSQL_DATABASE=wordpress
+MYSQL_USER=tzizi
+MYSQL_PASSWORD_FILE=/run/secrets/db_password
+MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+
+# WORDPRESS
+WP_TITLE=MarcheWP
+WP_ADMIN=superuser42
+WP_ADMIN_PASSWORD_FILE=/run/secrets/credentials
+WP_ADMIN_EMAIL=admin@localhost
