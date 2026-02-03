@@ -10,21 +10,26 @@ What's needed ?
     - A docker network to connect all containers
     - A docker compose file
     - A .env file located at root with all passwords and users
-    example:
+example:
 # DOMAIN
 DOMAIN_NAME=tzizi.42.fr
 
-# MARIADB
+# MYSQL
 MYSQL_DATABASE=wordpress
+MYSQL_HOST=mariadb
 MYSQL_USER=tzizi
-MYSQL_PASSWORD_FILE=/run/secrets/db_password
-MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+MYSQL_PASSWORD=123
+MYSQL_ROOT_PASSWORD=1234
 
 # WORDPRESS
-WP_TITLE=MarcheWP
-WP_ADMIN=superuser42
-WP_ADMIN_PASSWORD_FILE=/run/secrets/credentials
-WP_ADMIN_EMAIL=email@42.fr
+WP_TITLE=WorpressSiteMoi
+WP_ADMIN_USER=moiTelvin
+WP_USER=tel
+WP_EMAIL=tel@gmail.com
+WP_PASS=123
+WP_ADMIN_PASSWORD=1234
+WP_ADMIN_EMAIL=tzizi@student.42.fr
+
 
 make all: use docker- -f up -d --build
 make down: use docker-compose down
