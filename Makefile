@@ -2,7 +2,7 @@ COMPOSE = docker compose -f srcs/docker-compose.yml
 DOMAIN_NAME := $(shell sed -n 's/^DOMAIN_NAME=//p' srcs/.env | tr -d '\r')
 
 all:	
-	${COMPOSE} up -d --build ; @grep -q "\b$(DOMAIN_NAME)\b" /etc/hosts || echo "127.0.0.1 $(DOMAIN_NAME)" 
+	${COMPOSE} up -d --build ; grep -q "\b$(DOMAIN_NAME)\b" /etc/hosts || echo "127.0.0.1 $(DOMAIN_NAME)" 
 
 datadir:
 	sudo mkdir -p /home/tzizi/data
@@ -26,4 +26,4 @@ delimages:
 
 re: down all
 
-.PHONY: all datadir localhost unhost clean fclean down delimages re
+.PHONY: all datadir clean fclean down delimages re
