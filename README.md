@@ -15,6 +15,7 @@ Description
         - A docker network to connect all containers
 
 Instructions
+    run make datadir to create storage on your local machine
     run make to make volumes and build+run all containers.
     run make down to stop running containers and remove them (does not remove existing volumes).
     run make stop to stop all containers.

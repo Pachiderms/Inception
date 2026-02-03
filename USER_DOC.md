@@ -9,7 +9,9 @@ What's setup ?
 
     - A docker network to connect all containers
 
-Start the project: run make inside the root of the project
+Start the project: 
+    run make datadir to create storage on your local machine
+    run make inside the root of the project
 
 Stop the project: run make down inside the root of the project
 

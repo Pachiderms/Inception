@@ -10,7 +10,7 @@ What's needed ?
     - A docker network to connect all containers
     - A docker compose file
     - A .env file located at root with all passwords and users
-example:
+    example:
 # DOMAIN
 DOMAIN_NAME=tzizi.42.fr
 
