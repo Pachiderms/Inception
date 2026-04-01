@@ -62,6 +62,10 @@ docker rmi -f $(docker images -aq)
 docker build -t mariadb srcs/requirements/mariadb/ 
 docker run -it {container_name}
 ```
+### Check que la config wp est prete
+```bash
+docker exec -it mariadb sh -c 'env | grep MYSQL'
+```
 ### Execute a container (mariadb) and check user creation
 ```bash
 docker exec -it mariadb mysql -u root -p
