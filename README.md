@@ -1,4 +1,4 @@
-# This project has been created as part of the 42 curriculum by tzizi
+# This project has been created as part of the 42 curriculum
 
 ## Description
 This project aims to discover system administration by using Docker on a virtual machine. I've setup a small infrastructure composed of different services under specific rules with the use of docker compose.
